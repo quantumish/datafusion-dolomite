@@ -12,8 +12,8 @@ use crate::rules::RuleImpl;
 
 pub struct CascadesOptimizer {
     pub(super) required_prop: PhysicalPropertySet,
-    pub(super) rules: Vec<RuleImpl>,
-    pub(super) memo: Memo,
+    pub rules: Vec<RuleImpl>,
+    pub memo: Memo,
     pub(super) context: OptimizerContext,
     pub(super) cost_model: CostModel,
 }

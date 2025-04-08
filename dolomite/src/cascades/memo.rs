@@ -26,7 +26,7 @@ use crate::rules::{OptExprNode, OptExpression, Pattern, RuleId};
 use crate::stat::Statistics;
 
 /// Dynamic programming table used for storing expression groups.
-pub(super) struct Memo {
+pub struct Memo {
     /// Used to avoid insert duplicate group expression.
     group_exprs: HashMap<GroupExprKey, GroupExprId>,
     groups: HashMap<GroupId, Group>,
