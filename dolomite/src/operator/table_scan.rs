@@ -6,7 +6,9 @@ use crate::operator::{
 use crate::optimizer::Optimizer;
 use crate::properties::{LogicalProperty, PhysicalPropertySet};
 use anyhow::anyhow;
-use datafusion::common::{DFField, DFSchema};
+use datafusion::common::DFSchema;
+use datafusion::common::arrow::datatypes::Field;
+use datafusion_common::TableReference;
 use futures::executor::block_on;
 use std::fmt::Formatter;
 
@@ -59,13 +61,14 @@ impl OperatorTrait for TableScan {
         optimizer: &O,
     ) -> DolomiteResult<LogicalProperty> {
         let schema = block_on(optimizer.context().catalog.table(&self.table_name))
-            .ok_or_else(|| anyhow!("Table {:?} not exists", &self.table_name))?
+			.unwrap()
+			.ok_or_else(|| anyhow!("Table {:?} not exists", &self.table_name))?
             .schema();
 
         let table_fields = schema
             .fields()
             .iter()
-            .map(|f| DFField::from_qualified(&self.table_name, f.clone()))
+            .map(|f| (Some(TableReference::bare(self.table_name.clone())), f.clone()))
             .collect();
 
         let table_schema =

@@ -3,6 +3,8 @@ use anyhow::bail;
 use datafusion::datasource::empty::EmptyTable;
 
 use datafusion::logical_expr::LogicalPlan;
+use datafusion::scalar::ScalarValue;
+use datafusion_expr::Expr as DFExpr;
 use datafusion_expr::logical_plan::JoinConstraint;
 use datafusion_expr::logical_plan::{
     Join as DFJoin, Limit as DFLimit, Projection as DFProjection,
@@ -56,8 +58,10 @@ fn plan_node_to_df_logical_plan(plan_node: &PlanNode) -> DolomiteResult<LogicalP
         }
         Logical(LogicalLimit(limit)) => {
             let df_limit = DFLimit {
-                skip: 0,
-                fetch: Some(limit.limit()),
+                skip: None,
+                fetch: Some(Box::new(DFExpr::Literal(
+					ScalarValue::UInt64(Some(limit.limit() as u64))
+				))),
                 input: Arc::new(inputs.remove(0)),
             };
 
@@ -83,7 +87,7 @@ fn plan_node_to_df_logical_plan(plan_node: &PlanNode) -> DolomiteResult<LogicalP
                 Arc::new((*schema).clone().into()),
             ))));
             let df_scan = DFTableScan {
-                table_name: TableReference::from(scan.table_name()).to_owned_reference(),
+                table_name: TableReference::from(scan.table_name()),
                 source,
                 projection: None,
                 projected_schema: schema,
@@ -111,8 +115,11 @@ fn df_logical_plan_to_plan_node(
             (operator, inputs)
         }
         LogicalPlan::Limit(limit) => {
+			let DFExpr::Literal(ScalarValue::UInt64(Some(l))) = *limit.fetch.as_ref().unwrap().as_ref() else {
+				panic!("got complicated limit clause");
+			};
             let operator =
-                LogicalOperator::LogicalLimit(Limit::new(limit.fetch.unwrap()));
+                LogicalOperator::LogicalLimit(Limit::new(l as usize));
             let inputs = vec![df_logical_plan_to_plan_node(&limit.input, id_gen)?];
             (operator, inputs)
         }

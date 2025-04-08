@@ -58,7 +58,6 @@ fn plan_node_to_df_physical_plan<'a>(
                             create_physical_expr(
                                 e,
                                 &input_df_schema,
-                                &input_schema,
                                 session_state.execution_props(),
                             ),
                             create_physical_name(e),
@@ -102,6 +101,7 @@ fn plan_node_to_df_physical_plan<'a>(
             // }
             Physical(PhysicalTableScan(table_scan)) => {
                 let source = block_on(ctx.catalog.table(table_scan.table_name()))
+					.unwrap()
                     .ok_or_else(|| {
                         anyhow!(format!("Table not found: {}", table_scan.table_name()))
                     })?;

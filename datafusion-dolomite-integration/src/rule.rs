@@ -14,7 +14,8 @@ use dolomite::rules::RuleImpl;
 /// ```no
 /// Datafusion logical plan -> Our logical plan -> Heuristic optimizer -> Our logical plan ->
 /// Datafusion logical plan
-/// ```
+///     ```
+#[derive(Debug)]
 pub struct DFOptimizerAdapterRule {
     /// Our rules
     rules: Vec<RuleImpl>,

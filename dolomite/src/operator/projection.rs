@@ -1,4 +1,4 @@
-use datafusion::common::DFField;
+use datafusion::common::arrow::datatypes::Field;
 use datafusion_common::DFSchema;
 use datafusion_expr::Expr;
 use std::fmt::Formatter;
@@ -52,7 +52,7 @@ impl OperatorTrait for Projection {
             self.expr
                 .iter()
                 .map(|e| e.to_field(input_schema))
-                .collect::<DFResult<Vec<DFField>>>()?,
+                .collect::<DFResult<Vec<_>>>()?,
             input_logical_prop.schema().metadata().clone(),
         )?;
 

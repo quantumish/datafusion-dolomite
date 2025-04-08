@@ -18,7 +18,8 @@ use std::sync::Arc;
 /// ```no
 /// Datafusion logical plan -> Our logical plan -> CBO -> Our physical plan -> Datafusion
 /// physical plan
-/// ```
+///     ```
+#[derive(Debug)]
 pub struct DFQueryPlanner {
     rules: Vec<RuleImpl>,
     optimizer_ctx: OptimizerContext,

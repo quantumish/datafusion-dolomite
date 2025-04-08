@@ -10,6 +10,7 @@ use datafusion_common::DFSchema;
 use itertools::Itertools;
 use std::collections::HashMap;
 use std::fmt::Formatter;
+use std::sync::Arc;
 
 #[derive(Clone, Debug, Hash, PartialEq)]
 pub struct Filter {
@@ -44,14 +45,20 @@ impl OperatorTrait for Filter {
         let input_group_handle = optimizer.expr_at(handle).input_at(0, optimizer);
         let input_group = optimizer.group_at(input_group_handle);
         let input_schema = input_group.logical_prop().schema();
-        let fields = self
+        let fields: Vec<_> = self
             .projected_columns
             .iter()
             .map(|c| input_schema.index_of_column(c))
-            .map(|idx_result| idx_result.map(|idx| input_schema.field(idx).clone()))
+            .map(|idx_result| idx_result.map(|idx| Arc::new(input_schema.field(idx).clone())))
             .try_collect()?;
+		let table_refs: Vec<_> = self
+			.projected_columns
+			.iter()
+			.map(|c| c.relation.clone())
+			.collect();
+		let inp = table_refs.into_iter().zip(fields.into_iter()).collect();
 
-        let schema = DFSchema::new_with_metadata(fields, HashMap::new())?;
+        let schema = DFSchema::new_with_metadata(inp, HashMap::new())?;
         Ok(LogicalProperty::new(schema))
     }
 }

@@ -1,4 +1,4 @@
-use datafusion::catalog::schema::{MemorySchemaProvider, SchemaProvider};
+use datafusion::catalog::{MemorySchemaProvider, SchemaProvider};
 use std::fmt::Debug;
 use std::sync::Arc;
 
@@ -8,7 +8,7 @@ use crate::plan::Plan;
 use crate::properties::LogicalProperty;
 
 /// Context for optimization. Includes access to catalog, session variables.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct OptimizerContext {
     pub catalog: Arc<dyn SchemaProvider>,
 }
