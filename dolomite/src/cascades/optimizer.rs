@@ -69,8 +69,7 @@ impl CascadesOptimizer {
         }
     }
 
-    #[cfg(test)]
-    pub fn new_for_test(plan: Plan) -> Self {
+    pub fn default(plan: Plan) -> Self {
         Self {
             required_prop: PhysicalPropertySet::default(),
             rules: vec![],
