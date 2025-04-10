@@ -11,7 +11,7 @@ use crate::properties::PhysicalPropertySet;
 use crate::rules::RuleImpl;
 
 pub struct CascadesOptimizer {
-    pub(super) required_prop: PhysicalPropertySet,
+    pub required_prop: PhysicalPropertySet,
     pub rules: Vec<RuleImpl>,
     pub memo: Memo,
     pub(super) context: OptimizerContext,
@@ -36,7 +36,7 @@ impl Optimizer for CascadesOptimizer {
         &self.memo[expr_handle]
     }
 
-    fn find_best_plan(mut self) -> DolomiteResult<Plan> {
+    fn find_best_plan(&mut self) -> DolomiteResult<Plan> {
         let root_task = OptimizeGroup::new(
             self.memo.root_group_id(),
             self.required_prop.clone(),
@@ -44,7 +44,7 @@ impl Optimizer for CascadesOptimizer {
         )
         .into();
 
-        schedule(&mut self, root_task)?;
+        schedule(self, root_task)?;
 
         println!("Memo after optimization: {:?}", self.memo);
 

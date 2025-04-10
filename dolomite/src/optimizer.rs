@@ -42,7 +42,7 @@ pub trait Optimizer {
     fn expr_at(&self, expr_handle: Self::ExprHandle) -> &Self::Expr;
 
     /// Entry point to drive optimization process.
-    fn find_best_plan(self) -> DolomiteResult<Plan>;
+    fn find_best_plan(&mut self) -> DolomiteResult<Plan>;
 }
 
 pub trait OptExpr {

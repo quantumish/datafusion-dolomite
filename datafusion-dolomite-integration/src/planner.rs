@@ -36,7 +36,7 @@ impl QueryPlanner for DFQueryPlanner {
         let logical_plan = from_df_logical(df_logical_plan)
             .map_err(|e| DataFusionError::Plan(format!("{:?}", e)))?;
 
-        let optimizer = CascadesOptimizer::new(
+        let mut optimizer = CascadesOptimizer::new(
             PhysicalPropertySet::default(),
             self.rules.clone(),
             logical_plan,

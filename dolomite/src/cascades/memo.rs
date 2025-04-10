@@ -29,8 +29,8 @@ use crate::stat::Statistics;
 pub struct Memo {
     /// Used to avoid insert duplicate group expression.
     group_exprs: HashMap<GroupExprKey, GroupExprId>,
-    groups: HashMap<GroupId, Group>,
-    root_group_id: GroupId,
+    pub groups: HashMap<GroupId, Group>,
+    pub root_group_id: GroupId,
     next_group_id: GroupId,
 
     /// Records which group expression has been merged to.
@@ -579,7 +579,7 @@ impl Group {
         }
     }
 
-    pub(super) fn winner(
+    pub fn winner(
         &self,
         physical_prop_set: &PhysicalPropertySet,
     ) -> Option<&OptimizationResult> {
@@ -836,8 +836,8 @@ impl GroupExpr {
 
 /// The result of finding the lowest cost physical grouup expression for [`PhysicalPropertySet`].
 #[derive(Debug)]
-pub(super) struct OptimizationResult {
-    pub(super) lowest_cost: Cost,
+pub struct OptimizationResult {
+    pub lowest_cost: Cost,
     /// Id of lowest cost physical group.
     pub(super) group_expr_id: GroupExprId,
 }

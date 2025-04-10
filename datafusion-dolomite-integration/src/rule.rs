@@ -34,7 +34,7 @@ impl OptimizerRule for DFOptimizerAdapterRule {
             .map_err(|e| DataFusionError::Plan(format!("{:?}", e)))?;
 
         // Construct heuristic optimizer here
-        let hep_optimizer = HepOptimizer::new(
+        let mut hep_optimizer = HepOptimizer::new(
             MatchOrder::TopDown,
             1000,
             self.rules.clone(),

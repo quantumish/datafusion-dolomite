@@ -47,7 +47,7 @@ impl Optimizer for HepOptimizer {
         &self.graph.graph[expr_handle]
     }
 
-    fn find_best_plan(mut self) -> DolomiteResult<Plan> {
+    fn find_best_plan(&mut self) -> DolomiteResult<Plan> {
         for _times in 0..self.max_iter_times {
             // The plan no longer changes after iteration
             let mut fixed_point = true;
