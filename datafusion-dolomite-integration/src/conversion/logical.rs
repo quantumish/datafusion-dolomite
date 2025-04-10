@@ -60,7 +60,7 @@ fn plan_node_to_df_logical_plan(plan_node: &PlanNode) -> DolomiteResult<LogicalP
             let df_limit = DFLimit {
                 skip: None,
                 fetch: Some(Box::new(DFExpr::Literal(
-					ScalarValue::UInt64(Some(limit.limit() as u64))
+					ScalarValue::Int64(Some(limit.limit() as i64))
 				))),
                 input: Arc::new(inputs.remove(0)),
             };
@@ -115,7 +115,7 @@ fn df_logical_plan_to_plan_node(
             (operator, inputs)
         }
         LogicalPlan::Limit(limit) => {
-			let DFExpr::Literal(ScalarValue::UInt64(Some(l))) = *limit.fetch.as_ref().unwrap().as_ref() else {
+			let DFExpr::Literal(ScalarValue::Int64(Some(l))) = *limit.fetch.as_ref().unwrap().as_ref() else {
 				panic!("got complicated limit clause");
 			};
             let operator =
