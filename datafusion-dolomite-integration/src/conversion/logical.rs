@@ -19,7 +19,7 @@ use dolomite::operator::LogicalOperator::{
 };
 use dolomite::operator::Operator::Logical;
 
-use dolomite::operator::{Limit, LogicalOperator, Projection, TableScan};
+use dolomite::operator::{Filter, Limit, LogicalOperator, Projection, TableScan};
 
 use dolomite::plan::{Plan, PlanNode, PlanNodeIdGen};
 
@@ -145,6 +145,14 @@ fn df_logical_plan_to_plan_node(
                 scan.table_name.table().to_string(),
             ));
             let inputs = vec![];
+            (operator, inputs)
+        }
+		LogicalPlan::Filter(filter) => {
+            let operator = LogicalOperator::LogicalFilter(Filter::new(
+                filter.predicate.clone(),
+				vec![] // FIXME(quantumish) this may be a questionable default
+            ));
+            let inputs = vec![df_logical_plan_to_plan_node(&filter.input, id_gen)?];
             (operator, inputs)
         }
         plan => {
