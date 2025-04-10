@@ -130,6 +130,7 @@ impl Task for ApplyRule {
                         .into(),
                     );
                 } else {
+					println!("hey there!");
                     other_tasks.push(
                         OptimizeInputs {
                             group_expr_id,
@@ -166,6 +167,7 @@ pub(super) struct OptimizeExpression {
 
 impl Task for OptimizeExpression {
     fn execute(self, ctx: &mut CascadesOptimizer) -> DolomiteResult<TaskControl> {
+		println!("optimizing an expression");
         let group_expr = &ctx.memo[self.group_expr_id];
         let apply_rule_tasks = ctx
             .rules
@@ -414,6 +416,7 @@ impl OptimizeInputs {
                 mut accumulated_cost,
                 best_input_group_expr: _best_input_group_expr,
             } => {
+				println!("yo!!");
                 loop {
                     if accumulated_cost > self.upper_bound {
                         // Go to next derive result
@@ -554,8 +557,8 @@ impl Task for OptimizeGroup {
             self.required_prop, self.group_id
         );
         let mut tasks = Vec::with_capacity(group.expr_count());
-
-        for group_expr_id in group.logical_group_expr_ids() {
+		
+        for group_expr_id in group.logical_group_expr_ids() {			
             tasks.push(
                 OptimizeExpression {
                     group_expr_id,
@@ -568,6 +571,7 @@ impl Task for OptimizeGroup {
 
         // We run physical group optimization first so that we can set cost upper bound to do
         // early pruning.
+		println!("{:?}", group.physical_group_expr_ids());
         for group_expr_id in group.physical_group_expr_ids() {
             tasks.push(
                 OptimizeInputs {
@@ -593,6 +597,7 @@ pub(super) struct ExploreGroup {
 
 impl Task for ExploreGroup {
     fn execute(self, ctx: &mut CascadesOptimizer) -> DolomiteResult<TaskControl> {
+		println!("exploring group");
         if ctx.memo[self.group_id].explored {
             return Ok(TaskControl::done());
         }

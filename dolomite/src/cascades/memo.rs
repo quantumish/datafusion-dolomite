@@ -582,7 +582,7 @@ impl Group {
     pub fn winner(
         &self,
         physical_prop_set: &PhysicalPropertySet,
-    ) -> Option<&OptimizationResult> {
+    ) -> Option<&OptimizationResult> {		
         self.best_plans.get(physical_prop_set)
     }
 
@@ -609,6 +609,7 @@ impl Group {
         input_props: &[PhysicalPropertySet],
         cost: Cost,
     ) {
+		println!("called for {:?}!", self.group_id);
         if let Some(winner) = self.winner(output_prop) {
             if winner.lowest_cost < cost {
                 return;

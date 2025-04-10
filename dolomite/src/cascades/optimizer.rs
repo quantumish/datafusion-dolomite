@@ -46,8 +46,6 @@ impl Optimizer for CascadesOptimizer {
 
         schedule(self, root_task)?;
 
-        println!("Memo after optimization: {:?}", self.memo);
-
         self.memo.best_plan(&self.required_prop)
     }
 }
